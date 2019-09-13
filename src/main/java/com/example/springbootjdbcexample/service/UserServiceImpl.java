@@ -39,16 +39,19 @@ public class UserServiceImpl implements UserService {
         return userDAO.findAll();
     }
 
+    @Transactional
     @Override
     public UserDTO findById(Long aLong) {
         return null;
     }
 
+    @Transactional
     @Override
     public void deleteById(Long aLong) {
 
     }
 
+    @Transactional
     @Override
     public void delete(UserDTO userDTO) {
 

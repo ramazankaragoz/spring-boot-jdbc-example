@@ -22,15 +22,30 @@ public class UserDAOimpl extends BaseDAO<UserDTO> implements UserDAO {
     @Override
     public UserDTO save(UserDTO userDTO) {
 
-        queryBuilder = new StringBuilder();
-        queryBuilder.append("INSERT INTO ");
-        queryBuilder.append("usr_user (user_name,first_name,last_name,password) ");
-        queryBuilder.append("VALUES");
-        queryBuilder.append("(?,?,?,?)");
+        Integer status = 0;
 
-        params = new Object[]{userDTO.getUserName(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getPassword()};
+        try {
+            queryBuilder = new StringBuilder();
+            queryBuilder.append("INSERT INTO ");
+            queryBuilder.append("usr_user (user_name,first_name,last_name,password) ");
+            queryBuilder.append("VALUES");
+            queryBuilder.append("(?,?,?,?)");
 
-        Integer status = save(queryBuilder.toString(), params);
+            params = new Object[]{userDTO.getUserName(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getPassword()};
+
+            status = save(queryBuilder.toString(), params);
+
+            //getJdbcTemplate().getDataSource().getConnection().commit();
+
+            //params = new Object[]{userDTO.getUserName(), userDTO.getFirstName(), userDTO.getLastName(), null};
+            //save(queryBuilder.toString(), params);
+
+            //getJdbcTemplate().getDataSource().getConnection().commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         if (status != 1) {
             return null;
@@ -49,7 +64,7 @@ public class UserDAOimpl extends BaseDAO<UserDTO> implements UserDAO {
         queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT id, user_name,last_name,first_name, password FROM usr_user");
 
-        List<UserDTO> userDTOS=findAll(queryBuilder.toString());
+        List<UserDTO> userDTOS = findAll(queryBuilder.toString());
 
         return userDTOS;
     }
