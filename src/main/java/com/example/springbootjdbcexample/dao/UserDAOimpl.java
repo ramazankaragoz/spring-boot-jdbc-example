@@ -4,7 +4,9 @@ import com.example.springbootjdbcexample.dto.UserDTO;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -22,18 +24,25 @@ public class UserDAOimpl extends BaseDAO<UserDTO> implements UserDAO {
     @Override
     public UserDTO save(UserDTO userDTO) {
 
-        Integer status = 0;
+        Integer status=null;
 
         try {
             queryBuilder = new StringBuilder();
             queryBuilder.append("INSERT INTO ");
             queryBuilder.append("usr_user (user_name,first_name,last_name,password) ");
             queryBuilder.append("VALUES");
-            queryBuilder.append("(?,?,?,?)");
+            queryBuilder.append("(:userName,:firstName,:lastName,:password)");
 
-            params = new Object[]{userDTO.getUserName(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getPassword()};
+            //params = new Object[]{userDTO.getUserName(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getPassword()};
 
-            status = save(queryBuilder.toString(), params);
+            Map<String,Object> parameters=new HashMap<>();
+            parameters.put("userName",userDTO.getUserName());
+            parameters.put("firstName",userDTO.getFirstName());
+            parameters.put("lastName",userDTO.getLastName());
+            parameters.put("password",userDTO.getPassword());
+
+
+            status = save(queryBuilder.toString(), parameters);
 
             //getJdbcTemplate().getDataSource().getConnection().commit();
 
@@ -47,9 +56,11 @@ public class UserDAOimpl extends BaseDAO<UserDTO> implements UserDAO {
         }
 
 
-        if (status != 1) {
-            return null;
+        if (status != null) {
+            userDTO.setId(status.longValue());
         }
+
+
 
         return userDTO;
     }
